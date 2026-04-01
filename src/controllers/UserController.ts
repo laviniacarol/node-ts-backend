@@ -8,8 +8,8 @@ export class UserController {
         this.userService = userService;
     }
 
-    createUser = (request: Request, response: Response) => {
-        const { name, email } = request.body;
+    createUser = async (request: Request, response: Response) => {
+        const { name, email, password } = request.body;
 
         if (!name) {
             return response.status(400).json({
@@ -23,43 +23,58 @@ export class UserController {
             });
         }
 
-        this.userService.createUser(name, email);
-
-        return response.status(201).json({
-            message: 'Usuário Criado'
-        });
-    };
-
-    getAllUser = (request: Request, response: Response) => {
-        const users = this.userService.getAllUser();
-        return response.status(200).json(users);
-    };
-
-   deleteUser = (request: Request, response: Response) => {
-    const email = request.params.email as string;
-
-    if (!email) {
-        return response.status(400).json({
-            message: 'Bad Request: Email obrigatório'
-        });
-    }
-
-    try {
-        this.userService.deleteUser(email);
-
-        return response.status(200).json({
-            message: 'Usuário deletado'
-        });
-    } catch (error) {
-        if (error instanceof Error) {
-            return response.status(404).json({
-                message: error.message
+        if (!password) {
+            return response.status(400).json({
+                message: 'Bad Request: User.Password obrigatório'
             });
         }
 
-        return response.status(500).json({
-            message: 'Internal server error'
-        });
-    }
-};
-};
+        try {
+            const user = await this.userService.createUser(name, email, password);
+            return response.status(201).json(user);
+        } catch {
+            return response.status(500).json({
+                message: 'Internal server error'
+            });
+        }
+    };
+
+    getUsers = async (request: Request, response: Response) => {
+        try {
+            const users = await this.userService.getUsers();
+            return response.status(200).json(users);
+        } catch {
+            return response.status(500).json({
+                message: 'Internal server error'
+            });
+        }
+    };
+
+    deleteUser = async (request: Request, response: Response) => {
+        const email = request.params.email as string;
+
+        if (!email) {
+            return response.status(400).json({
+                message: 'Bad Request: Email obrigatório'
+            });
+        }
+
+        try {
+            await this.userService.deleteUser(email);
+
+            return response.status(200).json({
+                message: 'Usuário deletado'
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                return response.status(404).json({
+                    message: error.message
+                });
+            }
+
+            return response.status(500).json({
+                message: 'Internal server error'
+            });
+        }
+    };
+}

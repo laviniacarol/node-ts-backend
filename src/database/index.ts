@@ -6,12 +6,17 @@ export const AppDataSource = new DataSource({
     migrations: [
         "./src/database/migrations/*.ts"
     ],
-})
+    entities: [
+        "./src/entities/*.ts"
+    ],
+    synchronize: true
+});
 
-AppDataSource.initialize()
-  .then(() => {
-    console.log("Data Source inicializado")
-  })
-  .catch((error) => {
-    console.log(error)
-  })
+export const initDB = async () => {
+    try {
+        await AppDataSource.initialize();
+        console.log("Data Source inicializado");
+    } catch (error) {
+        console.error(error);
+    }
+};
