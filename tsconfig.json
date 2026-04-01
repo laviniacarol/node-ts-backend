@@ -8,6 +8,10 @@
     "types": ["node", "jest"],
 
     "sourceMap": true,
+      
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
 
     "strict": true,
     "esModuleInterop": true,
