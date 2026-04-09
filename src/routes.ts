@@ -1,6 +1,7 @@
-import { Router, Request, Response } from 'express'
+import { Router } from 'express'
 import { UserController } from './controllers/UserController'
 import { LoginController } from './controllers/LoginController'
+import { verifyAuth } from './middleware/verifyAuth'
 
 export const router = Router()
 
@@ -8,11 +9,9 @@ const userController = new UserController()
 const loginController = new LoginController()
 
 router.post('/user', userController.createUser)
-router.get('/user', userController.getUsers)
+router.get('/user', verifyAuth, userController.getUsers)
+router.get('/user/:userId', verifyAuth, userController.getUserById)
 
-router.delete('/user', (request: Request, response: Response) => {
-  const user = request.body
-  return response.status(200).json({ message: 'Usuário deletado' })
-})
+router.delete('/user/:email', userController.deleteUser)
 
 router.post('/login', loginController.login)

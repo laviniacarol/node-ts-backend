@@ -50,6 +50,32 @@ export class UserController {
         }
     };
 
+    getUserById = async (request: Request, response: Response) => {
+        const userId = request.params.userId as string;
+
+        if (!userId) {
+            return response.status(400).json({
+                message: 'Bad Request: Todos os campos são obrigatórios'
+            });
+        }
+
+        try {
+            const user = await this.userService.getUser(userId);
+
+            if (!user) {
+                return response.status(404).json({
+                    message: 'Usuário não encontrado'
+                });
+            }
+
+            return response.status(200).json(user);
+        } catch {
+            return response.status(500).json({
+                message: 'Internal server error'
+            });
+        }
+    };
+
     deleteUser = async (request: Request, response: Response) => {
         const email = request.params.email as string;
 
