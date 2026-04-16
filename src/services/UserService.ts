@@ -40,7 +40,7 @@ export class UserService {
         return this.userRepository.getUserByEmailAndPassword(email, password);
     }
 
-    getToken = async (email: string, password: string): Promise<string> => {
+    getToken = async (email: string, password: string): Promise<{ token: string, user: { id: string, name: string, email: string } }> => {
         const user = await this.getAuthenticatedUser(email, password);
 
         if (!user) {
@@ -60,6 +60,13 @@ export class UserService {
 
         const token = sign(tokenData, tokenKey, tokenOptions)
 
-        return token
+        return {
+            token,
+            user: {
+                id: user.user_id,
+                name: user.name,
+                email: user.email,
+            }
+        }
      }
 }

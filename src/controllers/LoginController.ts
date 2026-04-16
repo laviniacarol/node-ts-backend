@@ -18,8 +18,8 @@ export class LoginController {
         const { email, password } = request.body
 
         try {
-            const token = await this.userService.getToken(email, password)
-            return response.status(200).json({ token })
+            const result = await this.userService.getToken(email, password)
+            return response.status(200).json(result)
         } catch (error) {
             return response.status(401).json({ message: error })
         }

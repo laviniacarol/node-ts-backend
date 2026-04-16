@@ -9,7 +9,7 @@ export function verifyAuth(request: Request, response: Response, next: NextFunct
     try {
         const { sub } = verify(token, '123456789') as { sub: string };
         console.log('Token verificado, userId:', sub);
-        next();
+        return next();
     } catch (error) {
         return response.status(401).json({ message: 'Unauthorized: Token inválido' });
     }
